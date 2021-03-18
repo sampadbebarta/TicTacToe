@@ -2,6 +2,8 @@ import java.util.Scanner;
 
 public class TicTacToe {
 	private char[] board = new char[10];
+	private final static int USER = 0;
+	private final static int COMPUTER = 1;
 
 	// UC1 create board
 	public void boardCreation() {
@@ -59,6 +61,17 @@ public class TicTacToe {
 		}
 	}
 
+	// UC6 decides who plays first
+	public String getWhoPlaysFirst() {
+		int tossResult = (int) (Math.random() * 10) % 2;
+
+		if (tossResult == USER) {
+			return "Player";
+		} else {
+			return "Computer";
+		}
+	}
+
 	public static void main(String[] args) {
 		Scanner userInput = new Scanner(System.in);
 		System.out.println("Welcome to Tic Tac Toe game");
@@ -73,6 +86,10 @@ public class TicTacToe {
 		ticTacToeGame.showBoard();
 
 		ticTacToeGame.playersMakeMove(userInput, userLetter);
+
+		String playsFirst = ticTacToeGame.getWhoPlaysFirst();
+		System.out.println("Plays first: " + playsFirst);
+
 		userInput.close();
 	}
 }
