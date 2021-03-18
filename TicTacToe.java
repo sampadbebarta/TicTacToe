@@ -40,17 +40,23 @@ public class TicTacToe {
 			boardLocation = input.nextInt();
 			isLocationFree = false;
 			if (boardLocation >= 1 && boardLocation <= 9) {
-				if (board[boardLocation] == ' ') {
-					isLocationFree = true;
-				} else {
-					System.out.println("Already filled");
-				}
+				isLocationFree = checkIfPositionFree(boardLocation);
 			} else {
-				System.out.println("Invalid location");
+				System.out.println("Invalid position entered.");
 			}
 		} while (!isLocationFree);
 		board[boardLocation] = playerSymbol;
 		showBoard();
+	}
+
+	// UC5 check if there is free space or not
+	public boolean checkIfPositionFree(int boardLocation) {
+		if (board[boardLocation] == ' ') {
+			return true;
+		} else {
+			System.out.println("Already filled");
+			return false;
+		}
 	}
 
 	public static void main(String[] args) {
