@@ -31,6 +31,28 @@ public class TicTacToe {
 		System.out.println(board[7] + " | " + board[8] + " | " + board[9]);
 	}
 
+	// UC4 players put their symbol at a desired location
+	public void playersMakeMove(Scanner input, char playerSymbol) {
+		boolean isLocationFree;
+		int boardLocation;
+		do {
+			System.out.println("Enter the location (1-9) to put symbol: ");
+			boardLocation = input.nextInt();
+			isLocationFree = false;
+			if (boardLocation >= 1 && boardLocation <= 9) {
+				if (board[boardLocation] == ' ') {
+					isLocationFree = true;
+				} else {
+					System.out.println("Already filled");
+				}
+			} else {
+				System.out.println("Invalid location");
+			}
+		} while (!isLocationFree);
+		board[boardLocation] = playerSymbol;
+		showBoard();
+	}
+
 	public static void main(String[] args) {
 		Scanner userInput = new Scanner(System.in);
 		System.out.println("Welcome to Tic Tac Toe game");
@@ -42,8 +64,9 @@ public class TicTacToe {
 		char computerSymbol = ticTacToeGame.chooseSymbolForPlayer(userLetter);
 		System.out.println("User " + userLetter);
 		System.out.println("comp " + computerSymbol);
-
 		ticTacToeGame.showBoard();
+
+		ticTacToeGame.playersMakeMove(userInput, userLetter);
 		userInput.close();
 	}
 }
