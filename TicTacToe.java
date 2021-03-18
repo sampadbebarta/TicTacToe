@@ -57,7 +57,7 @@ public class TicTacToe {
 		if (board[boardLocation] == ' ') {
 			return true;
 		} else {
-			System.out.println("Already filled");
+			System.out.println("Already filled. Try other location.");
 			return false;
 		}
 	}
@@ -91,31 +91,30 @@ public class TicTacToe {
 	public void computerMakesMove(char computerSymbol, char opponentSymbol) {
 		boolean isLocationFree = false;
 		int boardLocation = 1;
-		while (!isLocationFree) {
-			int positionToWin = checkIfTwoSameSymbol(computerSymbol);
-			if (positionToWin == 0) { // if computer can't win in this move
-				int positionToBlock = checkIfTwoSameSymbol(opponentSymbol);
-				if (positionToBlock == 0) { // if no need to block user
-					int checkCorners = getAvailableCorner();
-					if (checkCorners == 0) { // if corners not available
-						if (checkIfPositionFree(5)) { // if center empty take it
-							boardLocation = 5;
-						} else {
-							int[] validCells = new int[] { 2, 4, 6, 8 };
-							Random random = new Random();
-							boardLocation = validCells[random.nextInt(validCells.length)];
-						}
+		int positionToWin = checkIfTwoSameSymbol(computerSymbol);
+		if (positionToWin == 0) { 					// if computer can't win in this move
+			int positionToBlock = checkIfTwoSameSymbol(opponentSymbol);
+			if (positionToBlock == 0) { 			// if no need to block user
+				int checkCorners = getAvailableCorner();
+				if (checkCorners == 0) { 			// if corners not available
+					if (checkIfPositionFree(5)) { 	// if center empty take it
+						boardLocation = 5;
 					} else {
-						boardLocation = checkCorners;
+						int[] validCells = new int[] { 2, 4, 6, 8 };
+						Random random = new Random();
+						while (!isLocationFree) {
+							boardLocation = validCells[random.nextInt(validCells.length)];
+							isLocationFree = checkIfPositionFree(boardLocation);
+						}
 					}
 				} else {
-					boardLocation = positionToBlock;
+					boardLocation = checkCorners;
 				}
 			} else {
-				boardLocation = positionToWin;
+				boardLocation = positionToBlock;
 			}
-			isLocationFree = false;
-			isLocationFree = checkIfPositionFree(boardLocation);
+		} else {
+			boardLocation = positionToWin;
 		}
 		board[boardLocation] = computerSymbol;
 		showBoard();
@@ -212,26 +211,44 @@ public class TicTacToe {
 	}
 
 	public static void main(String[] args) {
-		boolean playerTurn = false;
 		Scanner userInput = new Scanner(System.in);
 		System.out.println("Welcome to Tic Tac Toe game");
-		TicTacToe ticTacToeGame = new TicTacToe();
-		ticTacToeGame.boardCreation();
+		boolean isPlaying = true;
 
-		String playsFirst = ticTacToeGame.getWhoPlaysFirst();
-		System.out.println("Plays first: " + playsFirst);
-		if (playsFirst.equals("Player")) {
-			playerTurn = true;
+		// UC13 user can choose to play multiple times
+		while (isPlaying) {
+			System.out.println("Enter 1 to play game \n2 to exit");
+			int userSelects = userInput.nextInt();
+			switch (userSelects) {
+			case 1:
+				TicTacToe ticTacToeGame = new TicTacToe();
+				boolean playerTurn = false;
+				ticTacToeGame.boardCreation();
+
+				String playsFirst = ticTacToeGame.getWhoPlaysFirst();
+				System.out.println("Plays first: " + playsFirst);
+				if (playsFirst.equals("Player")) {
+					playerTurn = true;
+				}
+
+				System.out.println("Choose your symbol X or O:");
+				char userLetter = userInput.next().charAt(0);
+				char computerSymbol = ticTacToeGame.chooseSymbolForPlayer(userLetter);
+				System.out.println("User " + userLetter);
+				System.out.println("comp " + computerSymbol);
+				ticTacToeGame.showBoard();
+
+				ticTacToeGame.computerPlayerBothPlay(userInput, userLetter, computerSymbol, playerTurn);
+				break;
+			case 2:
+				System.out.println("----- Closing Game -----");
+				isPlaying = false;
+				break;
+			default:
+				System.out.println("Enter 1 to play game \n2 to exit");
+				break;
+			}
 		}
-
-		System.out.println("Enter X or O:");
-		char userLetter = userInput.next().charAt(0);
-		char computerSymbol = ticTacToeGame.chooseSymbolForPlayer(userLetter);
-		System.out.println("User " + userLetter);
-		System.out.println("comp " + computerSymbol);
-		ticTacToeGame.showBoard();
-
-		ticTacToeGame.computerPlayerBothPlay(userInput, userLetter, computerSymbol, playerTurn);
 		userInput.close();
 	}
 }
