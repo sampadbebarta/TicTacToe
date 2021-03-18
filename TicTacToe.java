@@ -95,7 +95,12 @@ public class TicTacToe {
 			if (positionToWin == 0) {
 				int positionToBlock = checkIfTwoSameSymbol(opponentSymbol);
 				if (positionToBlock == 0) {
-					boardLocation = (int) ((Math.random() * 10) % 9) + 1;
+					int checkCorners = getAvailableCorner();
+					if (checkCorners == 0) {
+						boardLocation = (int) ((Math.random() * 10) % 9) + 1;
+					} else {
+						boardLocation = checkCorners;
+					}
 				} else {
 					boardLocation = positionToBlock;
 				}
@@ -154,6 +159,20 @@ public class TicTacToe {
 				return 9;
 		}
 		return 0;
+	}
+
+	// UC10 take available corner if no one is winning
+	public int getAvailableCorner() {
+		if (checkIfPositionFree(1))
+			return 1;
+		else if (checkIfPositionFree(3))
+			return 3;
+		else if (checkIfPositionFree(7))
+			return 7;
+		else if (checkIfPositionFree(9))
+			return 9;
+		else
+			return 0;
 	}
 
 	// Both players plays until game is over
