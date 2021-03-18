@@ -1,4 +1,4 @@
-public class TicTacToeY {
+public class TicTacToe {
 	private char[] board = new char[10];
 
 	public void boardCreation() {
