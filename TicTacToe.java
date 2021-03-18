@@ -1,3 +1,4 @@
+import java.util.Random;
 import java.util.Scanner;
 
 public class TicTacToe {
@@ -92,12 +93,18 @@ public class TicTacToe {
 		int boardLocation = 1;
 		while (!isLocationFree) {
 			int positionToWin = checkIfTwoSameSymbol(computerSymbol);
-			if (positionToWin == 0) {
+			if (positionToWin == 0) { // if computer can't win in this move
 				int positionToBlock = checkIfTwoSameSymbol(opponentSymbol);
-				if (positionToBlock == 0) {
+				if (positionToBlock == 0) { // if no need to block user
 					int checkCorners = getAvailableCorner();
-					if (checkCorners == 0) {
-						boardLocation = (int) ((Math.random() * 10) % 9) + 1;
+					if (checkCorners == 0) { // if corners not available
+						if (checkIfPositionFree(5)) { // if center empty take it
+							boardLocation = 5;
+						} else {
+							int[] validCells = new int[] { 2, 4, 6, 8 };
+							Random random = new Random();
+							boardLocation = validCells[random.nextInt(validCells.length)];
+						}
 					} else {
 						boardLocation = checkCorners;
 					}
