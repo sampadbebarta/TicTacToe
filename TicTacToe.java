@@ -34,7 +34,7 @@ public class TicTacToe {
 	}
 
 	// UC4 players put their symbol at a desired location
-	public void playersMakeMove(Scanner input, char playerSymbol) {
+	public void playersMakeMove(Scanner input, char playerSymbol, char opponentSymbol) {
 		boolean isLocationFree;
 		int boardLocation;
 		do {
@@ -64,7 +64,6 @@ public class TicTacToe {
 	// UC6 decides who plays first
 	public String getWhoPlaysFirst() {
 		int tossResult = (int) (Math.random() * 10) % 2;
-
 		if (tossResult == USER) {
 			return "Player";
 		} else {
@@ -87,12 +86,22 @@ public class TicTacToe {
 		return false;
 	}
 
-	// UC8 if computer plays
-	public void computerMakesMove(char computerSymbol) {
+	// UC8 if computer plays and blocks user if it can win
+	public void computerMakesMove(char computerSymbol, char opponentSymbol) {
 		boolean isLocationFree = false;
 		int boardLocation = 1;
 		while (!isLocationFree) {
-			boardLocation = (int) ((Math.random() * 10) % 9) + 1;
+			int positionToWin = checkIfTwoSameSymbol(computerSymbol);
+			if (positionToWin == 0) {
+				int positionToBlock = checkIfTwoSameSymbol(opponentSymbol);
+				if (positionToBlock == 0) {
+					boardLocation = (int) ((Math.random() * 10) % 9) + 1;
+				} else {
+					boardLocation = positionToBlock;
+				}
+			} else {
+				boardLocation = positionToWin;
+			}
 			isLocationFree = false;
 			isLocationFree = checkIfPositionFree(boardLocation);
 		}
@@ -100,13 +109,60 @@ public class TicTacToe {
 		showBoard();
 	}
 
-	//Both players plays until game is over
+	// UC9 check if 2 same symbols present for winning
+	// if player's symbol same then player will otherwise will block the opponent
+	public int checkIfTwoSameSymbol(char symbol) {
+		if ((board[2] == symbol && board[3] == symbol) || (board[4] == symbol && board[7] == symbol)
+				|| (board[5] == symbol && board[9] == symbol)) {
+			if (checkIfPositionFree(1))
+				return 1;
+		}
+		if ((board[1] == symbol && board[3] == symbol) || (board[5] == symbol && board[8] == symbol)) {
+			if (checkIfPositionFree(2))
+				return 2;
+		}
+		if ((board[1] == symbol && board[2] == symbol) || (board[6] == symbol && board[9] == symbol)
+				|| (board[5] == symbol && board[7] == symbol)) {
+			if (checkIfPositionFree(3))
+				return 3;
+		}
+		if ((board[1] == symbol && board[7] == symbol) || (board[5] == symbol && board[6] == symbol)) {
+			if (checkIfPositionFree(4))
+				return 4;
+		}
+		if ((board[1] == symbol && board[9] == symbol) || (board[3] == symbol && board[7] == symbol)
+				|| (board[2] == symbol && board[8] == symbol) || (board[4] == symbol && board[6] == symbol)) {
+			if (checkIfPositionFree(5))
+				return 5;
+		}
+		if ((board[3] == symbol && board[9] == symbol) || (board[4] == symbol && board[5] == symbol)) {
+			if (checkIfPositionFree(6))
+				return 6;
+		}
+		if ((board[1] == symbol && board[4] == symbol) || (board[8] == symbol && board[9] == symbol)
+				|| (board[3] == symbol && board[5] == symbol)) {
+			if (checkIfPositionFree(7))
+				return 7;
+		}
+		if ((board[2] == symbol && board[5] == symbol) || (board[9] == symbol && board[7] == symbol)) {
+			if (checkIfPositionFree(8))
+				return 8;
+		}
+		if ((board[3] == symbol && board[6] == symbol) || (board[8] == symbol && board[7] == symbol)
+				|| (board[5] == symbol && board[1] == symbol)) {
+			if (checkIfPositionFree(9))
+				return 9;
+		}
+		return 0;
+	}
+
+	// Both players plays until game is over
 	public void computerPlayerBothPlay(Scanner userInput, char userLetter, char computerLetter, boolean playerTurn) {
 		boolean playerWins = false, computerWins = false;
 		int moveNumber = 1;
-		while (moveNumber < 10) {
+		while (moveNumber < 10) { // iterate till board fills
 			if (playerTurn) {
-				playersMakeMove(userInput, userLetter);
+				playersMakeMove(userInput, userLetter, computerLetter);
 				playerWins = getWinnerOrChangeTurn(userLetter);
 				if (!playerWins) {
 					playerTurn = false;
@@ -115,7 +171,7 @@ public class TicTacToe {
 					return;
 				}
 			} else {
-				computerMakesMove(computerLetter);
+				computerMakesMove(computerLetter, userLetter);
 				computerWins = getWinnerOrChangeTurn(computerLetter);
 				if (!computerWins) {
 					playerTurn = true;
